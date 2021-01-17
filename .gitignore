@@ -1,0 +1,8 @@
+.vscode/
+.DS_Store
+unsigned/compiletime/main
+unsigned/compiletime/main.exe
+unsigned/compiletime/main.obj
+unsigned/runtime/main
+unsigned/runtime/main.exe
+unsigned/runtime/main.obj
