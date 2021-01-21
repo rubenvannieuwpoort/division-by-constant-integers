@@ -6,3 +6,9 @@ unsigned/compiletime/main.obj
 unsigned/runtime/main
 unsigned/runtime/main.exe
 unsigned/runtime/main.obj
+signed/compiletime/main
+signed/compiletime/main.exe
+signed/compiletime/main.obj
+signed/runtime/main
+signed/runtime/main.exe
+signed/runtime/main.obj

@@ -48,6 +48,15 @@ public:
 };
 Shr *shr(Expression *a, Expression *b);
 
+class Sar : public Expression {
+	Expression *a, *b;
+public:
+	Sar(Expression *, Expression *);
+	std::string code();
+	uint evaluate();
+};
+Sar *sar(Expression *a, Expression *b);
+
 class Umulhi : public Expression {
 	Expression *a, *b;
 public:
@@ -57,6 +66,15 @@ public:
 };
 Umulhi* umulhi(Expression*, Expression*);
 
+class Imulhi : public Expression {
+	Expression *a, *b;
+public:
+	Imulhi(Expression *, Expression *);
+	std::string code();
+	uint evaluate();
+};
+Imulhi* imulhi(Expression*, Expression*);
+
 class Add : public Expression {
 	Expression *a, *b;
 public:
@@ -65,6 +83,24 @@ public:
 	uint evaluate();
 };
 Add* add(Expression *, Expression *);
+
+class Sub : public Expression {
+	Expression *a, *b;
+public:
+	Sub(Expression *, Expression *);
+	std::string code();
+	uint evaluate();
+};
+Sub* sub(Expression *, Expression *);
+
+class Neg : public Expression {
+	Expression *a;
+public:
+	Neg(Expression *);
+	std::string code();
+	uint evaluate();
+};
+Neg* neg(Expression *);
 
 class Gte : public Expression {
 	Expression *a, *b;
@@ -110,10 +146,23 @@ std::string Shr::code() {
 uint Shr::evaluate() { return a->evaluate() >> b->evaluate(); }
 Shr* shr(Expression* a, Expression* b) { return new Shr(a, b); }
 
+Sar::Sar(Expression* a, Expression* b) : a(a), b(b) { }
+std::string Sar::code() {
+	if (b->is_const_zero()) return a->code();
+	return a->code() + b->code() + "\tsar r0, " + a->access() + ", " + b->access() + "\n";
+}
+uint Sar::evaluate() { return ((sint)a->evaluate()) >> b->evaluate(); }
+Sar* sar(Expression* a, Expression* b) { return new Sar(a, b); }
+
 Umulhi::Umulhi(Expression* a, Expression* b) : a(a), b(b) { }
 std::string Umulhi::code() { return a->code() + b->code() + "\tumulhi r0, " + a->access() + ", " + b->access() + "\n"; }
 uint Umulhi::evaluate() { return ((big_uint)a->evaluate() * b->evaluate()) >> N; }
 Umulhi* umulhi(Expression* a, Expression* b) { return new Umulhi(a, b); }
+
+Imulhi::Imulhi(Expression* a, Expression* b) : a(a), b(b) { }
+std::string Imulhi::code() { return a->code() + b->code() + "\timulhi r0, " + a->access() + ", " + b->access() + "\n"; }
+uint Imulhi::evaluate() { return (((big_sint)((sint)a->evaluate())) * ((sint)b->evaluate())) >> N; }
+Imulhi* imulhi(Expression* a, Expression* b) { return new Imulhi(a, b); }
 
 bool carry = false;
 Add::Add(Expression* a, Expression* b) : a(a), b(b) { }
@@ -125,6 +174,17 @@ uint Add::evaluate() {
 	return left + right;
 }
 Add *add(Expression* a, Expression* b) { return new Add(a, b); }
+
+// TODO: implement carry setting
+Sub::Sub(Expression* a, Expression* b) : a(a), b(b) { }
+std::string Sub::code() { return a->code() + b->code() + "\tsub r0, " + a->access() + ", " + b->access() + "\n"; }
+uint Sub::evaluate() { return a->evaluate() - b->evaluate(); }
+Sub *sub(Expression* a, Expression* b) { return new Sub(a, b); }
+
+Neg::Neg(Expression* a) : a(a) { }
+std::string Neg::code() { return a->code() + "\tneg r0, " + a->access() + "\n"; }
+uint Neg::evaluate() { return -a->evaluate(); }
+Neg *neg(Expression* a) { return new Neg(a); }
 
 Gte::Gte(Expression* a, Expression* b) : a(a), b(b) { }
 std::string Gte::code() { return a->code() + b->code() + "\tgte r0, " + a->access() + ", " + b->access() + "\n"; }

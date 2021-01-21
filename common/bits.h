@@ -26,13 +26,15 @@
 typedef UINT uint;
 typedef BIG_UINT big_uint;
 
+#undef UINT_MAX
 #define UINT_MAX ((uint)-1)
+#define MSB (1 << (N - 1))
 
 typedef SINT sint;
 typedef BIG_SINT big_sint;
 
-#define SINT_MIN ((-1)<<(N/2))
-#define SINT_MAX (1-SINT_MIN)
+#define SINT_MIN ((-1)<<(N - 1))
+#define SINT_MAX (-1-SINT_MIN)
 
 // Returns true if x is a power of two
 bool is_power_of_two(uint x) {
