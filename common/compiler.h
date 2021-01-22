@@ -175,7 +175,7 @@ uint Add::evaluate() {
 }
 Add *add(Expression* a, Expression* b) { return new Add(a, b); }
 
-// TODO: implement carry setting
+// This should set the carry flag overflow but doesn't, because I didn't need it
 Sub::Sub(Expression* a, Expression* b) : a(a), b(b) { }
 std::string Sub::code() { return a->code() + b->code() + "\tsub r0, " + a->access() + ", " + b->access() + "\n"; }
 uint Sub::evaluate() { return a->evaluate() - b->evaluate(); }

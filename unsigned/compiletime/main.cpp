@@ -1,4 +1,4 @@
-#define N 16
+#define N 8
 #include "../../common/compiler.h"
 #include <stdio.h>
 #include <assert.h>
@@ -62,17 +62,16 @@ void test_boundaries() {
 		assert(e->evaluate() == 0);
 		input->assign(1);
 		assert(e->evaluate() == 1 / d);
+		input->assign(UINT_MAX - 1);
+		assert(e->evaluate() == (UINT_MAX - 1) / d);
 		input->assign(UINT_MAX);
 		assert(e->evaluate() == UINT_MAX / d);
 		
-		uint bound = UINT_MAX / d;
-		for (uint k = 1, n = d; true; k++) {
+		for (uint n = d, k = 1; k != UINT_MAX / d; n += d, k++) {
 			input->assign(n - 1);
 			assert(e->evaluate() == k - 1);
 			input->assign(n);
 			assert(e->evaluate() == k);
-			if (k == bound) break;
-			n += d;
 		}
 		
 		if (d == UINT_MAX) break;

@@ -36,60 +36,68 @@ void examples() {
 	}
 }
 
-// Test quotient n/d for all n, d in U_N with d > 0
+// Test quotient n/d for all n, d in S_N with d != 0
 void test_exhaustive() {
 	variable_t input = variable(0);
-	for (sint d = SINT_MIN + 1; true; d++) {
-		uint d_abs = abs(d);
-		if (d != 0) {
-			expression_t e = div_by_const_uint(d, input);
+	for (sint d = SINT_MIN; true; d++) {
+		if (d == 0) d++;
+		expression_t e = div_by_const_uint(d, input);
 			
-			for (sint n = SINT_MIN; true; n++) {
-				if (!(d == -1 && n == SINT_MIN)) {
-					input->assign(n);
-					if (((sint)e->evaluate()) != n / d) {
-						printf("%i / %i = %i (got %i)\n", n, d, n / d, (sint)e->evaluate());
-						exit(1);
-					}
-					if (n == SINT_MAX) break;
-				}
+		for (sint n = SINT_MIN; true; n++) {
+			if (!(d == -1 && n == SINT_MIN)) {
+				input->assign(n);
+				assert(e->evaluate() == n / d);
+				if (n == SINT_MAX) break;
 			}
-			
 		}
+		
 		if (d == SINT_MAX) break;
 	}
 }
 
 // For every division d in U_N, test the quotient
 // for all dividends of the form k * d or k * d - 1
-/*void test_boundaries() {
+void test_boundaries() {
 	variable_t input = variable(0);
-	for (uint d = SINT_MIN; true; d++) {
-		uint d_abs = abs(d);
-		if (d > 0 && !is_power_of_two(d_abs)) {
-			expression_t e = div_by_const_uint(d, input);
-			
-			input->assign(0);
-			assert(e->evaluate() == 0);
-			input->assign(1);
-			assert(e->evaluate() == 1 / d);
-			input->assign(UINT_MAX);
-			assert(e->evaluate() == UINT_MAX / d);
-			
-			uint bound = UINT_MAX / d;
-			for (uint k = 1, n = d; true; k++) {
-				input->assign(n - 1);
-				assert(e->evaluate() == k - 1);
-				input->assign(n);
-				assert(e->evaluate() == k);
-				if (k == bound) break;
-				n += d;
-			}
-		}
+	for (sint d = SINT_MIN; true; d++) {
+		if (d == 0) d++;
+		expression_t e = div_by_const_uint(d, input);
 		
+		input->assign(0);
+		assert(e->evaluate() == 0);
+
+		input->assign(1);
+		assert(e->evaluate() == 1 / d);
+		
+		input->assign(-1);
+		assert(e->evaluate() == -1 / d);
+		
+		input->assign(SINT_MAX);
+		assert(e->evaluate() == SINT_MAX / d);
+		
+		input->assign(SINT_MAX - 1);
+		assert(e->evaluate() == (SINT_MAX - 1) / d);
+		
+		if (d != -1) {
+			input->assign(SINT_MIN);
+			assert(e->evaluate() == SINT_MIN / d);
+		}
+
+		input->assign(SINT_MIN + 1);
+		assert(e->evaluate() == (SINT_MIN + 1) / d);
+		
+		sint k_start = (d == -1) ? SINT_MAX : SINT_MIN / d;
+
+		for (sint k = k_start, n = k_start * d; k != SINT_MAX / d; k++, n += d) {
+			input->assign(n - 1);
+			assert(e->evaluate() == k - 1);
+			input->assign(n);
+			assert(e->evaluate() == k);
+		}
+				
 		if (d == SINT_MAX) break;
 	}
-}*/
+}
 
 // Returns an expression that efficiently computes
 // a division by the constant value d.
