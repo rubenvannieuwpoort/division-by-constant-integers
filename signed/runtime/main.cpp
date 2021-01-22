@@ -63,7 +63,7 @@ void test_boundaries() {
 			n += d;
 		}
 		
-		if (d == UINT_MAX) break;
+		if (d == SINT_MAX) break;
 	}
 }
 

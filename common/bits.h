@@ -33,7 +33,7 @@ typedef BIG_UINT big_uint;
 typedef SINT sint;
 typedef BIG_SINT big_sint;
 
-#define SINT_MIN ((-1)<<(N - 1))
+#define SINT_MIN (-(1<<(N - 1)))
 #define SINT_MAX (-1-SINT_MIN)
 
 // Returns true if x is a power of two

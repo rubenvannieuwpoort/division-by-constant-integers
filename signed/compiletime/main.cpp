@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-void examples();
 void test_exhaustive();
 void test_boundaries();
 
@@ -12,7 +11,6 @@ expression_t div_fixpoint(sint d, expression_t n);
 expression_t div_by_const_signed_power_of_two(expression_t n, sint d);
 
 int main(void) {
-	printf("N = %u\n\n", N);
 #if N == 8 || N == 16
 	printf("Testing all %u-bit signed integers. This might take a while...\n", N);
 	test_exhaustive();
@@ -25,16 +23,9 @@ int main(void) {
 	return 0;
 }
 
-// Show the instructions generated for sample divisors
-void examples() {
-	variable_t input = variable(0);
-	uint inputs[] = { 1, 3, 7, 16, 14, 28 };
-	
-	for (uint d : inputs) {
-		expression_t e = div_by_const_uint(d, input);
-		printf("div%u:\n%s\tret\n\n", d, e->code().c_str());
-	}
-}
+// TODO: examples. This is harder than for the unsigned case since
+// these sequences get complicated enough to actually need register
+// allocation... Not sure if I will implement this anytime soon
 
 // Test quotient n/d for all n, d in S_N with d != 0
 void test_exhaustive() {
@@ -46,7 +37,7 @@ void test_exhaustive() {
 		for (sint n = SINT_MIN; true; n++) {
 			if (!(d == -1 && n == SINT_MIN)) {
 				input->assign(n);
-				assert(e->evaluate() == n / d);
+				assert((sint)e->evaluate() == n / d);
 				if (n == SINT_MAX) break;
 			}
 		}

@@ -1,4 +1,4 @@
-#define N 16
+#define N 8
 #include "../../common/bits.h"
 #include <stdio.h>
 
