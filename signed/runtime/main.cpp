@@ -18,11 +18,11 @@ void test_boundaries();
 
 int main() {
 #if N == 8 || N == 16
-	printf("Testing all %u-bit unsigned integers. This might take a while...\n", N);
+	printf("Testing all %u-bit signed integers. This might take a while...\n", N);
 	test_exhaustive();
 	printf("Done!\n");
 #elif N == 32
-	printf("Testing boundaries of all %u-bit unsigned integers divisors. This will take a while...\n", N);
+	printf("Testing boundaries of all %u-bit signed integers divisors. This will take a while...\n", N);
 	test_boundaries();
 	printf("Done!\n");
 #endif
@@ -45,7 +45,7 @@ void test_exhaustive() {
     }
 }
 
-// For every division d in U_N, test the quotient
+// For every divisor d in S_N with d != 0 test the quotient
 // for all dividends of the form k * d or k * d - 1.
 void test_boundaries() {
 	for (sint d = 1; true; d++) {

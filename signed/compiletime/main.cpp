@@ -6,7 +6,7 @@
 void test_exhaustive();
 void test_boundaries();
 
-expression_t div_by_const_uint(const sint d, expression_t n);
+expression_t div_by_const_sint(const sint d, expression_t n);
 expression_t div_fixpoint(sint d, expression_t n);
 expression_t div_by_const_signed_power_of_two(expression_t n, sint d);
 
@@ -32,7 +32,7 @@ void test_exhaustive() {
 	variable_t input = variable(0);
 	for (sint d = SINT_MIN; true; d++) {
 		if (d == 0) d++;
-		expression_t e = div_by_const_uint(d, input);
+		expression_t e = div_by_const_sint(d, input);
 			
 		for (sint n = SINT_MIN; true; n++) {
 			if (!(d == -1 && n == SINT_MIN)) {
@@ -52,7 +52,7 @@ void test_boundaries() {
 	variable_t input = variable(0);
 	for (sint d = SINT_MIN; true; d++) {
 		if (d == 0) d++;
-		expression_t e = div_by_const_uint(d, input);
+		expression_t e = div_by_const_sint(d, input);
 		
 		input->assign(0);
 		assert(e->evaluate() == 0);
@@ -92,7 +92,7 @@ void test_boundaries() {
 
 // Returns an expression that efficiently computes
 // a division by the constant value d.
-expression_t div_by_const_uint(const sint d, expression_t n) {
+expression_t div_by_const_sint(const sint d, expression_t n) {
 	if (d == 1) return n;
 	if (d == -1) return neg(n);
 	uint d_abs = abs(d);
