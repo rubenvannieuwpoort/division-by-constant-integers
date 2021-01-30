@@ -72,7 +72,7 @@ divdata_t precompute(uint d) {
 	divdata_t divdata;
 	uint l = floor_log2(d);
 	
-	if (is_power_of_two(d)) {
+	if (d == (1 << l)) {
 		divdata.mul = UINT_MAX;
 		divdata.add = UINT_MAX;
 	}
