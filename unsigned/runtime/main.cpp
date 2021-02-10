@@ -1,13 +1,8 @@
-#define N 8
-#include "../../common/bits.h"
 #include <stdio.h>
 
-typedef struct {
-	uint mul, add, shift;
-} divdata_t;
-
-divdata_t precompute(uint d);
-uint fast_divide(uint n, divdata_t dd);
+#define N 8
+#include "../../common/bits.h"
+#include "unsigned_division.h"
 
 void test_exhaustive();
 void test_boundaries();
@@ -28,9 +23,9 @@ int main() {
 // Test quotient n/d for all n, d in U_N with d > 0.
 void test_exhaustive() {
     for (uint d = 1; true; d++) {
-        divdata_t dd = precompute(d);
+        udivdata_t dd = precompute_unsigned(d);
         for (uint n = 0; true; n++) {
-            assert(fast_divide(n, dd) == n / d);
+            assert(fast_unsigned_divide(n, dd) == n / d);
             if (n == UINT_MAX) break;
         }
         if (d == UINT_MAX) break;
@@ -41,57 +36,20 @@ void test_exhaustive() {
 // for all dividends of the form k * d or k * d - 1.
 void test_boundaries() {
 	for (uint d = 1; true; d++) {
-		divdata_t dd = precompute(d);
+		udivdata_t dd = precompute_unsigned(d);
 		
-		assert(fast_divide(0, dd) == 0);
-		assert(fast_divide(1, dd) == 1 / d);
-		assert(fast_divide(UINT_MAX, dd) == UINT_MAX / d);
+		assert(fast_unsigned_divide(0, dd) == 0);
+		assert(fast_unsigned_divide(1, dd) == 1 / d);
+		assert(fast_unsigned_divide(UINT_MAX, dd) == UINT_MAX / d);
 		
 		uint bound = UINT_MAX / d;
 		for (uint k = 1, n = d; true; k++) {
-			assert(fast_divide(n, dd) == k);
-			assert(fast_divide(n - 1, dd) == k - 1);
+			assert(fast_unsigned_divide(n, dd) == k);
+			assert(fast_unsigned_divide(n - 1, dd) == k - 1);
 			if (k == bound) break;
 			n += d;
 		}
 		
 		if (d == UINT_MAX) break;
 	}
-}
-
-// For a given n, evaluate (n * mul + add) >> (N + shift),
-// where add, mul, and shift are specified in divdata_t dd.
-uint fast_divide(uint n, divdata_t dd) {
-	big_uint full_product = ((big_uint)n) * dd.mul + dd.add;
-	return (full_product >> N) >> dd.shift;
-}
-
-// For a given divisor d in U_N, compute add, mul, shift such that
-// (n * mul + add) >> (N + shift) = n / d for all n in U_N.
-divdata_t precompute(uint d) {
-	divdata_t divdata;
-	uint l = floor_log2(d);
-	
-	if (d == (1 << l)) {
-		divdata.mul = UINT_MAX;
-		divdata.add = UINT_MAX;
-	}
-	else {
-		uint m_down = (((big_uint)1) << (N + l)) / d;
-		uint m_up = m_down + 1;
-		uint temp = m_up * d;
-		bool use_round_up_method = temp <= (1 << l);
-		
-		if (use_round_up_method) {
-			divdata.mul = m_up;
-			divdata.add = 0;
-		}
-		else {
-			divdata.mul = m_down;
-			divdata.add = m_down;
-		}
-	}
-
-	divdata.shift = l;
-	return divdata;
 }
